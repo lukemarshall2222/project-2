@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-MAINTAINER John Doe "noemail@website.domain"
+MAINTAINER Luke Marshall "lukemarshall2222@gmail.com"
 RUN apt-get update -y
 RUN apt-get install python3.8 python3-pip -y
 COPY . /app
