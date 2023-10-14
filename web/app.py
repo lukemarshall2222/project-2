@@ -2,7 +2,7 @@
 Luke Marshall's Flask API.
 """
 
-from flask import Flask
+from flask import Flask, abort, send_from_directory
 
 app = Flask(__name__)
 
@@ -35,23 +35,23 @@ DEBUG = config["SERVER"]["DEBUG"]
 @app.route("/<string:filename>")
 def serve(filename):
     if '~' in filename or '..' in filename: # check for illegal characters
-        Flask.abort(403)
+        abort(403)
     path = f"pages/{filename}"
     if path != "pages/" and os.path.exists(path):
         # check the path exits and that is not just the directory 'pages' 
-        return Flask.send_from_directory()
+        return send_from_directory('pages/', filename)
     elif path == "pages/" or not os.path.exists(path):
         # check for nonexistent path or empty filename
-        Flask.abort(404)
+        abort(404)
     return "This should not be shown, something went wrong during file checking\n"
 
 @app.errorhandler(403)
 def handle_illegal_characters(e):
-    return Flask.send_from_directory('pages/', '403.html'), 403
+    return send_from_directory('pages/', '403.html'), 403
 
 @app.errorhandler(404)
 def handle_nonexistent_page(e):
-    return Flask.send_from_directory('pages/', '404.html'), 404
+    return send_from_directory('pages/', '404.html'), 404
 
 if __name__ == "__main__":
     app.run(debug=DEBUG, host='0.0.0.0', port=PORT)
